@@ -1,12 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import { TiDeleteOutline } from "react-icons/ti";
 import { toast } from "react-hot-toast";
-import Success from "../pages/success";
-import Link from "next/link";
+import { useRouter } from "next/router";
 
-const Paypal = ({ subtotal, close }) => {
+const Paypal = ({ subtotal, close, setShowCart }) => {
   const total = subtotal * 1.02;
   const paypal = useRef();
+  const router = useRouter();
   useEffect(() => {
     window.paypal
       .Buttons({
@@ -27,7 +27,9 @@ const Paypal = ({ subtotal, close }) => {
         onApprove: async (data, actions) => {
           const order = await actions.order.capture();
           toast.success(`Purchase completed successfully`);
-          location.href = `${location.protocol}//${location.host}/success`;
+          close(false);
+          setShowCart(false);
+          router.push("/success");
         },
         onError: (err) => {
           console.log(err);
